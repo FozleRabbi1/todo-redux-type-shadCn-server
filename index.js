@@ -9,13 +9,17 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb://localhost:27017`;
+// const uri = `mongodb://localhost:27017`;
+const uri = "mongodb+srv://fozlerabbishuvo:fd8NjelA9kTxxFem@reduxfristproject.mfv17al.mongodb.net/?retryWrites=true&w=majority";
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+// fozlerabbishuvo
+// fd8NjelA9kTxxFem
 
 const run = async () => {
   // await client.connect();
@@ -34,7 +38,7 @@ const run = async () => {
       if (req.query.priority) {
         query.priority = req.query.priority;
       }
-      const cursor = taskCollection.find(query);
+      const cursor = taskCollection.find(query).sort({ isCompleted: 1 });
       const tasks = await cursor.toArray();
       res.send({ status: true, data: tasks });
     });
@@ -62,7 +66,6 @@ const run = async () => {
     // status update
     app.put('/task/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const task = req.body;
       const filter = { _id: ObjectId(id) };
       const updateDoc = {
